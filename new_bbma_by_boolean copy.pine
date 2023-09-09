@@ -42,14 +42,17 @@ plot(wma1_out, title="WMA 1", color=#FF00FF)
 plot(wma2_out, title="WMA 2", color=color.red)
 plot(wma3_out, title="WMA 3", color=color.white)
 plot(wma4_out, title="WMA 4", color=color.yellow)
-plot(ema_out, color=color.aqua, title="EMA")
+plot(ema_out, title="EMA", color=color.aqua)
 // end moving average
 
 // start extreme condition
-upper_extreme_condition = wma2_out > upper_bb and close < open
-super_upper_extreme_condition =  wma4_out > upper_bb and close < open
-lower_extreme_condition =  wma1_out < lower_bb and close > open
-super_lower_extreme_condition = wma3_out < lower_bb and close > open
+prev_open = request.security(syminfo.tickerid, "", open[1])
+prev_close = request.security(syminfo.tickerid, "", close[1])
+
+upper_extreme_condition = wma2_out > upper_bb and close < open and prev_open < prev_close
+super_upper_extreme_condition =  wma4_out > upper_bb and close < open and prev_open < prev_close
+lower_extreme_condition =  wma1_out < lower_bb and close > open and prev_open > prev_close
+super_lower_extreme_condition = wma3_out < lower_bb and close > open and prev_open > prev_close
 
 plotshape(series=upper_extreme_condition, location=location.abovebar, color=color.blue, style=shape.labeldown, title="Upper Extreme", size = size.tiny, text = "Extreme", textcolor=color.white)
 plotshape(series=super_upper_extreme_condition, location=location.abovebar, color=color.blue, style=shape.labeldown, title="Super Upper Extreme", size = size.normal, text = "Super Extreme", textcolor=color.white)
@@ -61,20 +64,25 @@ plotshape(series=super_lower_extreme_condition, location=location.belowbar, colo
 // Input for selecting the timeframe
 // mhv_inp_timeframe = input(defval="D", title="Select Timeframe", options=["D", "4H", "1H", "15"])
 
-prev_open = request.security(syminfo.tickerid, "", open[1])
-prev_close = request.security(syminfo.tickerid, "", close[1])
+upper_mhv_condition = close < open and open < upper_bb and close < upper_bb and close > basis and close > wma1_out and close > wma3_out and prev_close > prev_open and prev_close < upper_bb and close > ema_out
+lower_mhv_condition = close > open and open > lower_bb and close > lower_bb and close < basis and close < wma2_out and close < wma4_out and prev_close < prev_open and prev_close > lower_bb and close < ema_out
 
-upper_mhv_condition = close < open and open < upper_bb and close < upper_bb and close > basis and close > wma1_out and close > wma3_out and prev_close > prev_open
-lower_mhv_condition = close > open and open > lower_bb and close > lower_bb and close < basis and close < wma2_out and close < wma4_out and prev_close < prev_open
-
-plotshape(series=upper_mhv_condition, location=location.abovebar, color=#b0ebb3, style=shape.labeldown, title="Upper MHV", size = size.tiny, text = "MHV", textcolor=color.blue)
-plotshape(series=lower_mhv_condition, location=location.belowbar, color=#f5a9b1, style=shape.labelup, title="Lower MHV", size = size.tiny, text = "MHV", textcolor=color.blue)
+plotshape(series=upper_mhv_condition, location=location.abovebar, color=color.red, style=shape.triangledown, title="Upper MHV", size = size.tiny, text = "MHV", textcolor=color.red)
+plotshape(series=lower_mhv_condition, location=location.belowbar, color=color.green, style=shape.triangleup, title="Lower MHV", size = size.tiny, text = "MHV", textcolor=color.green)
 // end MHV condition
 
-// start momentum condition
-momentum_buy_condition = close > upper_bb
-momentum_sell_condition = close < lower_bb
+// start CSAK condition
+csak_buy_condition = close > wma2_out and close > wma4_out and open < basis and close > basis and close < upper_bb and open > lower_bb and low > lower_bb and open < close
+csak_sell_condition = close < wma1_out and close < wma3_out and open > basis and close < basis and close > lower_bb and open < upper_bb and high < upper_bb and open > close
 
-plotshape(series=momentum_buy_condition, location=location.abovebar, color=color.green, style=shape.triangledown, title="CSM Buy", size = size.tiny, text = "CSM", textcolor = color.green)
-plotshape(series=momentum_sell_condition, location=location.belowbar, color=color.red, style=shape.triangleup, title="CSM Sell", size = size.tiny, text = "CSM", textcolor = color.red)
+plotshape(series=csak_buy_condition, location=location.belowbar, color=color.green, style=shape.triangleup, title="CSAK Buy", size = size.tiny, text = "CSAK", textcolor=color.green)
+plotshape(series=csak_sell_condition, location=location.abovebar, color=color.red, style=shape.triangledown, title="CSAK Sell", size = size.tiny, text = "CSAK", textcolor=color.red)
+// end CSAK conditiontiny
+
+// start momentum condition
+momentum_buy_condition = close > upper_bb and close > ema_out
+momentum_sell_condition = close < lower_bb and close < ema_out
+
+plotshape(series=momentum_buy_condition, location=location.abovebar, color=color.green, style=shape.labeldown, title="CSM Buy", size = size.tiny, text = "CSM", textcolor = color.white)
+plotshape(series=momentum_sell_condition, location=location.belowbar, color=color.red, style=shape.labelup, title="CSM Sell", size = size.tiny, text = "CSM", textcolor = color.white)
 // end momentum condition
