@@ -65,7 +65,7 @@ prev_open = request.security(syminfo.tickerid, "", open[1])
 prev_close = request.security(syminfo.tickerid, "", close[1])
 
 upper_mhv_condition = close < open and open < upper_bb and close < upper_bb and close > basis and close > wma1_out and close > wma3_out and prev_close > prev_open
-lower_mhv_condition = close > open and open > lower_bb and close > lower_bb and close < basis and close < wma1_out and close < wma3_out and prev_close < prev_open
+lower_mhv_condition = close > open and open > lower_bb and close > lower_bb and close < basis and close < wma2_out and close < wma4_out and prev_close < prev_open
 
 plotshape(series=upper_mhv_condition, location=location.abovebar, color=#b0ebb3, style=shape.labeldown, title="Upper MHV", size = size.tiny, text = "MHV", textcolor=color.blue)
 plotshape(series=lower_mhv_condition, location=location.belowbar, color=#f5a9b1, style=shape.labelup, title="Lower MHV", size = size.tiny, text = "MHV", textcolor=color.blue)
