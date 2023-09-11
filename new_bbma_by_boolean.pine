@@ -46,13 +46,10 @@ plot(ema_out, title="EMA", color=color.aqua)
 // end moving average
 
 // start extreme condition
-prev_open = request.security(syminfo.tickerid, "", open[1])
-prev_close = request.security(syminfo.tickerid, "", close[1])
-
-upper_extreme_condition = wma2_out > upper_bb and close < open and prev_open < prev_close
-super_upper_extreme_condition =  wma4_out > upper_bb and close < open and prev_open < prev_close
-lower_extreme_condition =  wma1_out < lower_bb and close > open and prev_open > prev_close
-super_lower_extreme_condition = wma3_out < lower_bb and close > open and prev_open > prev_close
+upper_extreme_condition = wma2_out > upper_bb and close < open and open[1] < close[1]
+super_upper_extreme_condition =  wma4_out > upper_bb and close < open and open[1] < close[1]
+lower_extreme_condition =  wma1_out < lower_bb and close > open and open[1] > close[1]
+super_lower_extreme_condition = wma3_out < lower_bb and close > open and open[1] > close[1]
 
 plotshape(series=upper_extreme_condition, location=location.abovebar, color=color.blue, style=shape.labeldown, title="Upper Extreme", size = size.tiny, text = "Extreme", textcolor=color.white)
 plotshape(series=super_upper_extreme_condition, location=location.abovebar, color=color.blue, style=shape.labeldown, title="Super Upper Extreme", size = size.normal, text = "Super Extreme", textcolor=color.white)
@@ -64,8 +61,8 @@ plotshape(series=super_lower_extreme_condition, location=location.belowbar, colo
 // Input for selecting the timeframe
 // mhv_inp_timeframe = input(defval="D", title="Select Timeframe", options=["D", "4H", "1H", "15"])
 
-upper_mhv_condition = close < open and open < upper_bb and close < upper_bb and close > basis and close > wma1_out and close > wma3_out and prev_close > prev_open and prev_close < upper_bb and close > ema_out
-lower_mhv_condition = close > open and open > lower_bb and close > lower_bb and close < basis and close < wma2_out and close < wma4_out and prev_close < prev_open and prev_close > lower_bb and close < ema_out
+upper_mhv_condition = close < open and open < upper_bb and close < upper_bb and close > basis and close > wma1_out and close > wma3_out and close[1] > open[1] and close[1] < upper_bb and close > ema_out
+lower_mhv_condition = close > open and open > lower_bb and close > lower_bb and close < basis and close < wma2_out and close < wma4_out and close[1] < open[1] and close[1] > lower_bb and close < ema_out
 
 plotshape(series=upper_mhv_condition, location=location.abovebar, color=color.red, style=shape.triangledown, title="Upper MHV", size = size.tiny, text = "MHV", textcolor=color.red)
 plotshape(series=lower_mhv_condition, location=location.belowbar, color=color.green, style=shape.triangleup, title="Lower MHV", size = size.tiny, text = "MHV", textcolor=color.green)
